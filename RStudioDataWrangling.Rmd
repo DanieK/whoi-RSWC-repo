@@ -1,0 +1,82 @@
+---
+title: "Data Wrangling"
+author: "dkinkade"
+date: "10/22/2018"
+output: html_document
+---
+```{r}
+library(tidyverse) # install.packages("tidyverse")
+
+```
+```{r}
+## read gapminder csv. Note the readr:: prefix identifies which package it's in
+gapminder <- readr::read_csv('https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder.csv')
+
+## explore the gapminder dataset
+gapminder # this looks at all the data - this dataset is super long! Let's inspect in different ways
+head(gapminder)
+tail(gapminder, 20)
+summary(gapminder) #summary of stats about data
+#install.packages("skimr")
+skimr::skim(gapminder)
+```
+
+
+```{r}
+# filter by rows
+filter(gapminder, lifeExp < 29)
+filter(gapminder, country == "Mexico")
+filter(gapminder, country %in% c("Mexico","Peru","Brazil"))
+sweden <- filter(gapminder, country == "Sweden")
+sweden$lifeExp
+summary(sweden)
+mean(sweden$lifeExp)
+
+```
+
+```{r}
+#select by columns  (works the same way as filtering does)
+select(gapminder, year, lifeExp)  #select on these columns
+select(gapminder, -continent, -lifeExp) # will exclude these columns
+
+#save a variable:
+gap_cambodia <- filter(gapminder, country == "Cambodia")
+gap_cambodia2 <- select(gap_cambodia, -continent, lifeExp)
+
+#Pipe Operator: %>%
+gapminder %>% head(3)  # same as using head
+#data gets piped to the function in a way that doesn't require it to be an arguement, just take a dataset and operate on it...
+head(gapminder, 3)
+
+#Improving variable assignment with pipe:
+gap_cambodia <- gapminder %>% filter(country == "Cambodia")
+gap_cambodia2 <- gapminder %>% select(-continent, -lifeExp)
+
+#ABOVE still too much work, so use pipe this way:
+gap_cambodia <- gapminder %>% 
+  filter(country == "Cambodia") %>% 
+  select(-continent, -lifeExp)
+
+```
+```{r}
+#mutate adds new variables
+gapminder %>%
+  mutate(index = 1:nrow(gapminder))
+gapminder %>%
+  mutate(planet = "Earth")
+
+gapminder %>%
+  mutate(gdp = pop * gdpPercap)
+
+#Challenge:
+#find max gdpPerCap of Egypt and Vietnam combined and create a new column...
+
+max_gdpPerCap <- gapminder %>% 
+  filter(country %in% c("Cambodia", "Egypt")) %>%
+  mutate(gdp = pop * gdpPercap,
+         max_gdp = max(gdp))
+#this was my way, but it didn't work:
+#mutate(max(max_gdpPerCap))
+```
+
+

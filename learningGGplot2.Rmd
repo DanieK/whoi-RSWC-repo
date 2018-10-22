@@ -8,23 +8,77 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+```{r}
+# install and load tidyverse
+#install.packages("tidyverse") # note on Windows use double quotes
+library(tidyverse)
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
 ```
 
-## Including Plots
+```{r}
+#National Parks in California
+ca <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/ca.csv") 
 
-You can also embed plots, for example:
+#Acadia National Park
+acadia <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/acadia.csv")
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+#Southeast US National Parks
+se <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/se.csv")
+
+#2016 Visitation for all Pacific West National Parks
+visit_16 <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/visit_16.csv")
+
+#All Nationally designated sites in Massachusetts
+mass <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/mass.csv")
+
+```
+```{r}
+head(ca)
+ggplot(data = ca) +
+  geom_point(aes(x=year, y = visitors))
+
+
+```
+```{r}
+head(ca)
+ggplot(data = ca) +
+  geom_point(aes(x=year, y = visitors, color = park_name))
+
+```
+```{r}
+head(ca)
+ggplot(data = ca) +
+  # NOTE the below doesn't work b/c color was called OUTSIDE of easthetics"aes" and therefore R is looking for an object called "park_name"
+  geom_point(aes(x=year, y = visitors), color = park_name)
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+head(ca)
+ggplot(data = ca) +
+  geom_point(aes(x=year, y = visitors, color = park_name)) +
+                 labs(x = "Year",
+                      y = "Visitation",
+                      title = "California National Park Visitors") +
+  theme_bw() +
+theme(legend.title = element_blank())
+
+
+```
+```{r}
+head(se)
+ggplot(data = se) +
+  geom_point(aes(x=year, y = visitors, color = state)) +
+  labs(x = "Year",
+       y = "Visitors",
+       title = "California SE Regional Park Visitors") +
+  theme_classic() +
+  #theme(legend.title.align = 0) +
+  #theme(legend.title.align = 1) +
+    theme(plot.title = element_text(hjust=0) +
+theme(axis.text.x = element_text(angle = 45, size = 12))
+
+
+```
+
+
